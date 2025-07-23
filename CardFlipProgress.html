@@ -1,0 +1,268 @@
+CardFlipProgress = 
+    // FRONT — TÍTULO E ÍCONE
+    VAR Front_Titulo                 = "Meta Atual"
+    VAR Front_IconURL                = "https://cdn-icons-png.flaticon.com/128/249/249391.png"
+    VAR Front_TamanhoFonteTitulo     = "1.2rem"
+    VAR Front_FonteTitulo            = "'Segoe UI', Arial, sans-serif"
+
+    // FRONT — META E VALOR ATUAL
+    VAR Front_MetaValor              = [ValorEmMilhoes_Comprometido]
+    VAR Front_ValorAtual             = 23
+
+    // FRONT — CORES
+    VAR Front_CorFundo               = "#fff"
+    VAR Front_CorTitulo              = "#232946"
+    VAR Front_CorBarra               = "#6b4dff"
+    VAR Front_CorTextoBarra          = "#fff"
+
+    // BACK — TÍTULO E ÍCONE
+    VAR Back_Titulo                  = "Meta Anterior"
+    VAR Back_IconURL                 = "https://cdn-icons-png.flaticon.com/128/249/249382.png"
+
+    // BACK — META E VALOR ATUAL
+    VAR Back_MetaValor               = 2.2
+    VAR Back_ValorAtual              = 1.4
+
+    // BACK — CORES
+    VAR Back_CorFundo                = "#232946"
+    VAR Back_CorTitulo               = "#fff"
+    VAR Back_CorBarra                = "#ff9c07"
+    VAR Back_CorTextoBarra           = "#232946"
+
+    // GERAIS — FORMATAÇÃO E SUFIXOS
+    VAR TipoMoeda                    = "R$"
+    VAR MostrarMi                    = TRUE()
+    VAR MostrarSufixo                = TRUE()
+    VAR Sufixo                       = IF(MostrarSufixo, IF(MostrarMi, "Mi", "Mil"), "")
+
+    // CÁLCULOS FRONT
+    VAR Front_Percentual             = IF(Front_MetaValor > 0, DIVIDE(Front_ValorAtual, Front_MetaValor, 0) * 100, 0)
+    VAR Front_LarguraBarra           = FORMAT(MIN(Front_Percentual, 100), "0") & "%"
+    VAR Front_MetaFormatada          = TipoMoeda & " " & FORMAT(Front_MetaValor, "#,##0.00") & " " & Sufixo
+    VAR Front_ValorAtualFormatada    = TipoMoeda & " " & FORMAT(Front_ValorAtual, "#,##0.00") & " " & Sufixo
+
+    // CÁLCULOS BACK
+    VAR Back_Percentual              = IF(Back_MetaValor > 0, DIVIDE(Back_ValorAtual, Back_MetaValor, 0) * 100, 0)
+    VAR Back_LarguraBarra            = FORMAT(MIN(Back_Percentual, 100), "0") & "%"
+    VAR Back_MetaFormatada           = TipoMoeda & " " & FORMAT(Back_MetaValor, "#,##0.00") & " " & Sufixo
+    VAR Back_ValorAtualFormatada     = TipoMoeda & " " & FORMAT(Back_ValorAtual, "#,##0.00") & " " & Sufixo
+
+RETURN
+"
+<div class='flip-card'>
+  <div class='flip-card-inner'>
+    <!-- Frente -->
+    <div class='flip-card-front'>
+      <img src='" & Front_IconURL & "' class='icon-top-right' alt='Icone Frente' />
+      <div class='title'>" & UPPER(Front_Titulo) & "</div>
+      <div class='meta-label'>
+        <div class='meta-left'>Meta: <span class='meta-value'>" & Front_MetaFormatada & "</span></div>
+        <div class='meta-right'>Atual: <span class='meta-value'>" & Front_ValorAtualFormatada & "</span></div>
+      </div>
+      <div class='progress-bar'>
+        <div class='progress-fill' style='width:" & Front_LarguraBarra & ";background:" & Front_CorBarra & ";'>
+          <span class='bar-label' style='color:" & Front_CorTextoBarra & ";'>" & FORMAT(Front_Percentual, "0") & "%</span>
+        </div>
+      </div>
+    </div>
+    <!-- Verso -->
+    <div class='flip-card-back'>
+      <img src='" & Back_IconURL & "' class='icon-top-right' alt='Icone Verso' />
+      <div class='title'>" & UPPER(Back_Titulo) & "</div>
+      <div class='meta-label'>
+        <div class='meta-left'>Meta: <span class='meta-value'>" & Back_MetaFormatada & "</span></div>
+        <div class='meta-right'>Atual: <span class='meta-value'>" & Back_ValorAtualFormatada & "</span></div>
+      </div>
+      <div class='progress-bar'>
+        <div class='progress-fill' style='width:" & Back_LarguraBarra & ";background:" & Back_CorBarra & ";'>
+          <span class='bar-label' style='color:" & Back_CorTextoBarra & ";'>" & FORMAT(Back_Percentual, "0") & "%</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+body, * {
+  -webkit-font-smoothing: antialiased !important;
+  -moz-osx-font-smoothing: grayscale !important;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.flip-card {
+  width: 100%;
+  height: 100%;
+  min-width: 160px;
+  min-height: 260px;  /* <-- AUMENTE AQUI PARA UM CARD MAIS ALTO */
+  max-width: 100vw;
+  max-height: 100vh;
+  perspective: 1000px;
+  margin: auto;
+  overflow: hidden;
+  position: relative;
+  transition: width 0.3s, height 0.3s;
+}
+
+.flip-card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.7s ease;
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+.flip-card:hover .flip-card-inner {
+  transform: rotateY(180deg);
+}
+
+.flip-card-front,
+.flip-card-back {
+  box-shadow: 0 0 4px rgba(0,0,0,0.05);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 1em;
+  padding: 1em 1em 0.6em 1em;
+  border: 1px solid rgba(155,155,155,0.07);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  font-family: " & Front_FonteTitulo & ";
+  overflow: hidden;
+}
+
+.flip-card-front {
+  background: " & Front_CorFundo & ";
+  color: " & Front_CorTitulo & ";
+  transform: translateZ(0);
+  backface-visibility: visible;
+}
+
+.flip-card-back {
+  background: " & Back_CorFundo & ";
+  color: " & Back_CorTitulo & ";
+  transform: rotateY(180deg) translateZ(1px);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  filter: none;
+  will-change: transform, opacity;
+}
+
+.title {
+  font-size: " & Front_TamanhoFonteTitulo & ";
+  font-weight: 700;
+  margin-bottom: 0.5em;
+  text-align: left;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: inherit;
+}
+
+.meta-label {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  font-size: 0.95em;
+  font-weight: 500;
+  margin-bottom: 0.7em;
+  color: inherit;
+}
+
+.meta-left, .meta-right {
+  white-space: nowrap;
+}
+
+.meta-value {
+  font-weight: 700;
+  color: #6b4dff;
+  margin-left: 4px;
+}
+
+.progress-bar {
+  width: 100%;
+  min-width: 120px;
+  background: #eee;
+  border-radius: 1em;
+  overflow: hidden;
+  margin-bottom: 0.1em;
+  position: relative;
+  display: flex;
+  align-items: center;
+  height: 28px;
+}
+
+.progress-fill {
+  height: 100%;
+  border-radius: 1em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  transition: width 0.4s;
+  min-width: 36px;
+}
+
+.bar-label {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1em;
+  font-weight: bold;
+  pointer-events: none;
+  letter-spacing: 1px;
+  color: inherit;
+  text-shadow: 0 0 1px rgba(0,0,0,0.2);
+}
+
+.icon-top-right {
+  position: absolute;
+  top: 0.6em;
+  right: 0.8em;
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
+  opacity: 0.9;
+}
+
+@media (max-width: 600px) {
+  .flip-card {
+    max-width: 97vw;
+    min-width: 120px;
+    height: clamp(100px, 30vw, 160px);
+    min-height: 120px;
+  }
+  .title {
+    font-size: clamp(0.9rem, 2.4vw, 1.1rem);
+  }
+  .meta-label {
+    font-size: 0.87em;
+  }
+  .progress-bar {
+    height: 20px;
+  }
+  .bar-label {
+    font-size: 0.9em;
+  }
+  .flip-card-front,
+  .flip-card-back {
+    padding: 0.6em 0.8em 0.4em 0.8em;
+    border-radius: 0.7em;
+  }
+  .icon-top-right {
+    width: 18px;
+    height: 18px;
+  }
+}
+</style>
+"
